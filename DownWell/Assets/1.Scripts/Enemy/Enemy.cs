@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
     //public float speed = 1f;
     [Header("DropItems")]
     public List<GameObject> dropItems;
+    public List<GameObject> successItem;
 
     Collider2D[] colliders;
 
@@ -68,6 +69,18 @@ public class Enemy : MonoBehaviour
     {
         if (dropItems.Count > 0)
         {
+            for (int i = 1; i < dropItems.Count; i++)
+            {
+                if (dropItems[i].GetComponent<ItemDrop>().setRandomItem())
+                    successItem.Add(dropItems[i]);
+            }
+            if (successItem.Count>0)
+            {
+                int itemRand = UnityEngine.Random.Range(0, successItem.Count);
+                successItem[itemRand].GetComponent<Item>().InstantiateItem(transform.position);
+                successItem.Clear();
+            }
+
             string seed = (Time.time + Random.value).ToString();
             System.Random rand = new System.Random(seed.GetHashCode());
             int rdCount = rand.Next(2, 5);
@@ -76,6 +89,7 @@ public class Enemy : MonoBehaviour
             //    dropItems[0].GetComponent<Item>().InstantiateItem(transform.position);
             dropItems[0].GetComponent<Item>().InstantiateItem(transform.position, rdCount);
         }
+
         Score.instance.getScore(this.gameObject);
         if (GetComponent<Effector>() != null) GetComponent<Effector>().Generate("Die");
         Destroy(this.gameObject);
