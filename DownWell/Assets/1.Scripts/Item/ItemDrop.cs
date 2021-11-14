@@ -4,16 +4,28 @@ using UnityEngine;
 
 public class ItemDrop : MonoBehaviour
 {
-    public ItemInfo i_Info;
-
-    public bool setRandomItem()
+    public List<GameObject> enemyDropItem;
+    List<GameObject> successItem;
+    
+    public void InstantiateRandomItem(Vector3 position)
     {
-        bool gain = chanceResult(i_Info.chacePercent);
-        return gain;
+        if (enemyDropItem.Count > 0)
+        {
+            for (int i = 0; i < enemyDropItem.Count; i++)
+            {
+                if (chanceResult(enemyDropItem[i].GetComponent<Item>().i_Info.chacePercent))
+                    successItem.Add(enemyDropItem[i]);
+            }
+            if (successItem.Count > 0)
+            {
+                int itemRand = UnityEngine.Random.Range(0, successItem.Count);
+                successItem[itemRand].GetComponent<Item>().InstantiateItem(position);
+                successItem.Clear();
+            }
+        }
     }
 
-
-    public bool chanceResult(float chance)  //chance = È®·ü(%)
+    bool chanceResult(float chance)  //chance = È®·ü(%)
     {
         chance = chance / 100f;
      
