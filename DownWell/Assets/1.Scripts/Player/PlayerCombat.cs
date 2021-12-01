@@ -116,6 +116,8 @@ public class PlayerCombat : MonoBehaviour
     {
         if (isInvincible) return;
 
+        if (ItemManager.instance.curItem != "") ItemManager.instance.UseItem();
+
         if(useLoseHealth) health.LoseHealth();
 
         KnuckBack(knuckBackSpeed, transform.position, enemy.transform.position, knuckBackDistance);
@@ -177,6 +179,8 @@ public class PlayerCombat : MonoBehaviour
         yield return new WaitForSeconds(invincibleTime);
 
         isInvincible = false;
+        invincibleTime = ItemManager.instance.originInvincibleTime;
+
         GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
     }
 
